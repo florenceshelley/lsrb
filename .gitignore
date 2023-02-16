@@ -1,0 +1,24 @@
+# OSX
+.DS_Store
+
+# IntelliJ/IDE
+build/
+.idea
+local.properties
+*.iml
+*.hprof
+*.sw*
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Env
+.env
+
+# Miscellaneous
+.cache/
+public/
+*.pem
+*.crt
