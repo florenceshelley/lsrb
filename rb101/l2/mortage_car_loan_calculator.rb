@@ -6,15 +6,18 @@ def prompt_input_invalid
   prompt('Please enter a valid number.')
 end
 
+# validate that the input is a number
 def validate_number(input)
   input = input.to_s
   /^\d/.match(input)
 end
 
-def formatted_number(amount)
-  format("%.2f", amount).to_f
+# format a number to 2 floating points
+def formatted_number(number)
+  format('%.2f', number).to_f
 end
 
+# return a percentage rate in decimals (e.g. 60% becomes 0.6)
 def formatted_rate(rate)
   rate = rate.to_f
   rate / 100.0
