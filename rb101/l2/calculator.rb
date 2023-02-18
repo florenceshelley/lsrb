@@ -125,7 +125,7 @@ loop do
   prompt("#{operation_message} the two numbers...")
   prompt("The result is #{result}")
 
-  prompt("Do you want to perform another calculation? (y to calculate again)")
+  prompt('Do you want to perform another calculation? (y to calculate again)')
   keep_calculating = Kernel.gets.chomp
 
   break unless keep_calculating.downcase == 'y'

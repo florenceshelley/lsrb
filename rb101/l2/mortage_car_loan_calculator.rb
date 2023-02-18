@@ -26,7 +26,7 @@ def calculate_monthly_payment(amount, rate, duration)
   rate = formatted_rate(rate)
   duration = duration.to_i
 
-  step1 = 1 - (1 + rate) **(-duration)
+  step1 = 1 - (1 + rate)**(-duration)
   step2 = rate / formatted_number(step1)
   total = amount * formatted_number(step2)
   formatted_number(total)
@@ -78,11 +78,16 @@ def loan_calculator
   loan_duration_in_months = get_loan_duration_in_months
   monthly_interest_rate = get_monthly_interest_rate
 
-  monthly_payment = calculate_monthly_payment(loan_amount, monthly_interest_rate, loan_duration_in_months)
+  monthly_payment = calculate_monthly_payment(
+    loan_amount,
+    monthly_interest_rate,
+    loan_duration_in_months
+  )
+
   prompt("Your pay back rate is: #{monthly_payment}/month")
 end
 
-# Program start
+# program start
 loop do
   loan_calculator
 
