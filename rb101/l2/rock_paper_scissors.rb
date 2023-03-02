@@ -1,13 +1,13 @@
 VALID_CHOICES = {
-  :rock => 'rock',
-  :paper => 'paper',
-  :scissors => 'scissors'
+  rock: 'rock',
+  paper: 'paper',
+  scissors: 'scissors'
 }.freeze
 
 OUTCOMES = {
-  :win => 'win',
-  :lose => 'lose',
-  :draw => 'draw'
+  win: 'win',
+  lose: 'lose',
+  draw: 'draw'
 }.freeze
 
 WIN_CONDITIONS = {
@@ -70,6 +70,7 @@ def rock_paper_scissors
     player_choice: player_choice,
     computer_choice: computer_choice
   )
+
   display_results(outcome)
 end
 
