@@ -100,9 +100,9 @@ loop do
   loan_calculator
 
   prompt('Do you want to perform another calculation? (y to calculate again)')
-  keep_calculating = gets.chomp
+  keep_calculating = gets.chomp.downcase
 
-  break unless keep_calculating.downcase == 'y'
+  break unless keep_calculating == 'y' || keep_calculating == 'yes'
 end
 
 prompt('Thank you for using the Mortgage/Car Loan Calculator!')
