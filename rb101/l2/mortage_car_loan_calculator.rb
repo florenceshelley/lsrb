@@ -7,14 +7,14 @@ def prompt_input_invalid
 end
 
 # validate that the input is a number
-def validate_number(input)
+def valid_number?(input)
   input = input.to_s
-  /^\d/.match(input)
+  /\A\d+(\.\d+)?\z/.match?(input)
 end
 
-# format a number to 2 floating points
+# format a number to 2 floating points and return as a string
 def formatted_number(number)
-  format('%.2f', number).to_f
+  format('%.2f', number)
 end
 
 # return a percentage rate in decimals (e.g. 60% becomes 0.6)
@@ -25,23 +25,24 @@ end
 
 # mortgage loan formula: m = p * (j / (1 - (1 + j) ** (-n)))
 def calculate_monthly_payment(amount, rate, duration)
-  amount = formatted_number(amount)
-  rate = formatted_rate(rate)
+  amount = amount.to_f
+  rate = rate.to_f
   duration = duration.to_i
 
+  # if step 1 results in 0, assign 0 as the value for step2
+  # to handle the ZeroDivisionError
   step1 = 1 - (1 + rate)**(-duration)
-  step2 = rate / formatted_number(step1)
-  total = amount * formatted_number(step2)
-  formatted_number(total)
+  step2 = step1 == 0.00 ? 0.00 : rate / step1
+  amount * step2
 end
 
 def get_amount
   loan_amount = nil
 
   loop do
-    prompt('What is your loan amount?')
+    prompt('What is your loan amount? (e.g. 10000 for $10,000)')
     loan_amount = gets.chomp
-    break unless validate_number(loan_amount).nil?
+    break if valid_number?(loan_amount)
     prompt_input_invalid
   end
 
@@ -54,7 +55,7 @@ def get_loan_duration_in_months
   loop do
     prompt('What is your loan duration (in months)?')
     loan_duration_in_months = gets.chomp
-    break unless validate_number(loan_duration_in_months).nil?
+    break if valid_number?(loan_duration_in_months)
     prompt_input_invalid
   end
 
@@ -67,7 +68,7 @@ def get_monthly_interest_rate
   loop do
     prompt('What is your current expected rate (in percentage, e.g. 6 for 6%)?')
     monthly_interest_rate = gets.chomp
-    break unless validate_number(monthly_interest_rate).nil?
+    break if valid_number?(monthly_interest_rate)
     prompt_input_invalid
   end
 
@@ -87,11 +88,15 @@ def loan_calculator
     loan_duration_in_months
   )
 
-  prompt("Your pay back rate is: #{monthly_payment}/month")
+  formatted_monthly_payment = formatted_number(monthly_payment)
+
+  prompt("Your pay back rate is: $#{formatted_monthly_payment}/month")
 end
 
 # program start
 loop do
+  system('clear')
+
   loan_calculator
 
   prompt('Do you want to perform another calculation? (y to calculate again)')
