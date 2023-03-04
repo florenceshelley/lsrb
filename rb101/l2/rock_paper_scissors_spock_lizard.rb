@@ -1,9 +1,9 @@
 VALID_CHOICES = {
-  rock: 'rock',
-  paper: 'paper',
-  scissors: 'scissors',
-  spock: 'spock',
-  lizard: 'lizard'
+  rock: 'r',
+  paper: 'p',
+  scissors: 'sc',
+  spock: 'sp',
+  lizard: 'l'
 }.freeze
 
 OUTCOMES = {
@@ -12,12 +12,12 @@ OUTCOMES = {
   draw: 'draw'
 }.freeze
 
-WIN_CONDITIONS = {
-  'rock' => [VALID_CHOICES[:scissors], VALID_CHOICES[:lizard]],
-  'paper' => [VALID_CHOICES[:rock], VALID_CHOICES[:spock]],
-  'scissors' => [VALID_CHOICES[:paper], VALID_CHOICES[:lizard]],
-  'spock' => [VALID_CHOICES[:scissors], VALID_CHOICES[:rock]],
-  'lizard' => [VALID_CHOICES[:paper], VALID_CHOICES[:spock]]
+WINNING_CHOICES = {
+  VALID_CHOICES[:rock] => [VALID_CHOICES[:scissors], VALID_CHOICES[:lizard]],
+  VALID_CHOICES[:paper] => [VALID_CHOICES[:rock], VALID_CHOICES[:spock]],
+  VALID_CHOICES[:scissors] => [VALID_CHOICES[:paper], VALID_CHOICES[:lizard]],
+  VALID_CHOICES[:spock] => [VALID_CHOICES[:scissors], VALID_CHOICES[:rock]],
+  VALID_CHOICES[:lizard] => [VALID_CHOICES[:paper], VALID_CHOICES[:spock]]
 }.freeze
 
 def prompt(msg)
@@ -32,11 +32,23 @@ def generate_computer_choice
   VALID_CHOICES.values.sample
 end
 
+def interpolated_choices
+  choices = []
+  VALID_CHOICES.each { |key, value| choices << "#{value} (#{key})" }
+
+  choices
+end
+
+def choice_name(choice)
+  choice = VALID_CHOICES.find { |_, value| value == choice }
+  choice[0].to_s
+end
+
 def get_player_choice
   player_choice = nil
 
   loop do
-    prompt("Choose one: #{VALID_CHOICES.values.join(', ')}")
+    prompt("Choose one: #{interpolated_choices.join(', ')}")
     player_choice = gets.chomp
     break if valid_choice?(player_choice)
     prompt('That is not a valid choice.')
@@ -46,9 +58,9 @@ def get_player_choice
 end
 
 def get_outcome(player_choice, computer_choice)
-  if WIN_CONDITIONS[player_choice].include?(computer_choice)
+  if WINNING_CHOICES[player_choice].include?(computer_choice)
     OUTCOMES[:win]
-  elsif WIN_CONDITIONS[computer_choice].include?(player_choice)
+  elsif WINNING_CHOICES[computer_choice].include?(player_choice)
     OUTCOMES[:lose]
   else
     OUTCOMES[:draw]
@@ -65,14 +77,19 @@ def display_results(outcome)
   end
 end
 
+def display_selections(player_choice, computer_choice)
+  prompt("You chose: #{player_choice}; Computer chose: #{computer_choice}")
+end
+
 def rock_paper_scissors_spock_lizard
   player_choice = get_player_choice
   computer_choice = generate_computer_choice
 
-  prompt("You chose: #{player_choice}; Computer chose: #{computer_choice}")
+  player_choice_name = choice_name(player_choice)
+  computer_choice_name = choice_name(computer_choice)
+  display_selections(player_choice_name, computer_choice_name)
 
   outcome = get_outcome(player_choice, computer_choice)
-
   display_results(outcome)
 end
 
