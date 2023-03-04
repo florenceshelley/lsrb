@@ -23,10 +23,16 @@ def formatted_rate(rate)
   rate / 100.0
 end
 
+# return the interest rate per month based on the annual percentage rate
+def monthly_interest_rate(rate)
+  rate = rate.to_f
+  rate / 12
+end
+
 # mortgage loan formula: m = p * (j / (1 - (1 + j) ** (-n)))
 def calculate_monthly_payment(amount, rate, duration)
+  rate = formatted_rate(rate)
   amount = amount.to_f
-  rate = rate.to_f
   duration = duration.to_i
 
   # if step 1 results in 0, assign 0 as the value for step2
@@ -62,17 +68,17 @@ def get_loan_duration_in_months
   loan_duration_in_months
 end
 
-def get_monthly_interest_rate
-  monthly_interest_rate = nil
+def get_annual_interest_rate
+  annual_interest_rate = nil
 
   loop do
-    prompt('What is your current expected rate (in percentage, e.g. 6 for 6%)?')
-    monthly_interest_rate = gets.chomp
-    break if valid_number?(monthly_interest_rate)
+    prompt('What is your current annual rate (in percentage, e.g. 6 for 6%)?')
+    annual_interest_rate = gets.chomp
+    break if valid_number?(annual_interest_rate)
     prompt_input_invalid
   end
 
-  monthly_interest_rate
+  annual_interest_rate
 end
 
 def loan_calculator
@@ -80,8 +86,9 @@ def loan_calculator
 
   loan_amount = get_amount
   loan_duration_in_months = get_loan_duration_in_months
-  monthly_interest_rate = get_monthly_interest_rate
+  annual_interest_rate = get_annual_interest_rate
 
+  monthly_interest_rate = monthly_interest_rate(annual_interest_rate)
   monthly_payment = calculate_monthly_payment(
     loan_amount,
     monthly_interest_rate,
