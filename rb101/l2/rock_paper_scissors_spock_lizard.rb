@@ -45,7 +45,7 @@ def get_player_choice
   player_choice
 end
 
-def get_outcome(player_choice:, computer_choice:)
+def get_outcome(player_choice, computer_choice)
   if WIN_CONDITIONS[player_choice].include?(computer_choice)
     OUTCOMES[:win]
   elsif WIN_CONDITIONS[computer_choice].include?(player_choice)
@@ -70,10 +70,7 @@ def rock_paper_scissors_spock_lizard
   computer_choice = generate_computer_choice
   prompt("You chose: #{player_choice}; Computer chose: #{computer_choice}")
 
-  outcome = get_outcome(
-    player_choice: player_choice,
-    computer_choice: computer_choice
-  )
+  outcome = get_outcome(player_choice, computer_choice)
 
   display_results(outcome)
 end
