@@ -68,6 +68,7 @@ end
 def rock_paper_scissors_spock_lizard
   player_choice = get_player_choice
   computer_choice = generate_computer_choice
+
   prompt("You chose: #{player_choice}; Computer chose: #{computer_choice}")
 
   outcome = get_outcome(player_choice, computer_choice)
