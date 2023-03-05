@@ -24,6 +24,13 @@ def prompt(msg)
   puts("=> #{msg}")
 end
 
+def play_again?
+  prompt('Would you like to play again? (y to keep playing)')
+  play_again = gets.chomp.downcase
+
+  play_again == 'y' || play_again == 'yes'
+end
+
 def valid_choice?(player_choice)
   name, abbr = VALID_CHOICES.find do |_, value|
     player_choice.start_with?(value)
@@ -64,6 +71,20 @@ def choice_pair(choice)
   end
 end
 
+def grand_winner(scores)
+  return 'computer' if scores['player'] < scores['computer']
+
+  'player'
+end
+
+def calculate_scores(outcome, current_scores)
+  if outcome == OUTCOMES[:win]
+    current_scores['player'] += 1
+  elsif outcome == OUTCOMES[:lose]
+    current_scores['computer'] += 1
+  end
+end
+
 def get_player_choice
   player_choice = nil
 
@@ -89,44 +110,64 @@ def get_outcome(player_choice, computer_choice)
   end
 end
 
-def display_results(outcome)
-  if outcome == OUTCOMES[:win]
+def display_outcome(outcome)
+  case outcome
+  when OUTCOMES[:win]
     prompt('You won!')
-  elsif outcome == OUTCOMES[:lose]
+  when OUTCOMES[:lose]
     prompt('Computer won!')
-  elsif outcome == OUTCOMES[:draw]
+  else
     prompt("It's a tie!")
   end
 end
 
+def display_scores(scores)
+  prompt("Player: #{scores['player']}; Computer: #{scores['computer']}")
+end
+
+def display_final_results(scores)
+  grand_winner = grand_winner(scores)
+  win_count = scores[grand_winner]
+  message = "The grand winner is #{grand_winner}, with #{win_count} wins!"
+
+  prompt(message)
+end
+
 def display_selections(player_choice, computer_choice)
+  player_choice = choice_name(player_choice)
+  computer_choice = choice_name(computer_choice)
+
   prompt("You chose: #{player_choice}; Computer chose: #{computer_choice}")
 end
 
 def rock_paper_scissors_spock_lizard
-  player_choice = get_player_choice
-  computer_choice = generate_computer_choice
+  scores = { 'player' => 0, 'computer' => 0 }
 
-  player_choice_name = choice_name(player_choice)
-  computer_choice_name = choice_name(computer_choice)
-  display_selections(player_choice_name, computer_choice_name)
+  while scores['player'] < 3 && scores['computer'] < 3
+    player_choice = get_player_choice
+    computer_choice = generate_computer_choice
 
-  outcome = get_outcome(player_choice, computer_choice)
-  display_results(outcome)
+    display_selections(player_choice, computer_choice)
+
+    outcome = get_outcome(player_choice, computer_choice)
+    display_outcome(outcome)
+
+    calculate_scores(outcome, scores)
+    display_scores(scores)
+
+    break unless scores['player'] < 3 || scores['computer'] < 3
+  end
+
+  display_final_results(scores)
 end
 
-# program start
+# start
 prompt('Welcome to a game of "Rock, Paper, Scissors, Spock, Lizard!"')
 
 loop do
-  system('clear')
-
   rock_paper_scissors_spock_lizard
-
-  prompt('Would you like to play again? (y to keep playing)')
-  play_again = gets.chomp.downcase
-
-  break unless play_again == 'y' || play_again == 'yes'
+  break unless play_again?
+  system('clear')
 end
 
 prompt('That was fun, thanks for playing!')
