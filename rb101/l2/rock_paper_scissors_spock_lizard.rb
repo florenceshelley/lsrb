@@ -1,15 +1,19 @@
+MAX_SCORE = 3
+
+PLAYERS = { player: 'player', computer: 'computer' }.freeze
+
+OUTCOMES = {
+  win: 'win',
+  lose: 'lose',
+  draw: 'draw'
+}.freeze
+
 VALID_CHOICES = {
   rock: 'r',
   paper: 'p',
   scissors: 'sc',
   spock: 'sp',
   lizard: 'l'
-}.freeze
-
-OUTCOMES = {
-  win: 'win',
-  lose: 'lose',
-  draw: 'draw'
 }.freeze
 
 WINNING_CHOICES = {
@@ -47,6 +51,10 @@ def valid_choice?(player_choice)
   name.to_s == player_choice || abbr == player_choice
 end
 
+def max_score?(scores)
+  scores['player'] >= MAX_SCORE || scores['computer'] >= MAX_SCORE
+end
+
 def generate_computer_choice
   VALID_CHOICES.values.sample
 end
@@ -79,17 +87,17 @@ def choice_key_value_pair(choice)
 end
 
 def grand_winner(scores)
-  scores['player'] < scores['computer'] ? 'computer' : 'player'
+  scores['player'] < scores['computer'] ? PLAYERS[:computer] : PLAYERS[:player]
 end
 
 # return the name of the player if they are the winner
 # otherwise, default to 'Computer' as the winner
 # (capitalize 'computer' name for consistency)
 def grand_winner_name(winner, player_name)
-  winner == 'player' ? player_name : winner.capitalize
+  winner == PLAYERS[:player] ? player_name : winner.capitalize
 end
 
-def calculate_scores(outcome, current_scores)
+def increment_scores(outcome, current_scores)
   if outcome == OUTCOMES[:win]
     current_scores['player'] += 1
   elsif outcome == OUTCOMES[:lose]
@@ -168,9 +176,9 @@ def display_selections(player_choice, computer_choice)
 end
 
 def rock_paper_scissors_spock_lizard(player_name)
-  scores = { 'player' => 0, 'computer' => 0 }
+  scores = { PLAYERS[:player] => 0, PLAYERS[:computer] => 0 }
 
-  while scores['player'] < 3 && scores['computer'] < 3
+  until max_score?(scores)
     player_choice = get_player_choice
     computer_choice = generate_computer_choice
     display_selections(player_choice, computer_choice)
@@ -178,14 +186,14 @@ def rock_paper_scissors_spock_lizard(player_name)
     outcome = get_outcome(player_choice, computer_choice)
     display_outcome(outcome)
 
-    calculate_scores(outcome, scores)
+    increment_scores(outcome, scores)
     display_scores(scores, player_name)
   end
 
   display_final_results(scores, player_name)
 end
 
-# keep logic within a main method to avoid globals
+# keep logic within a main method to avoid unnecessary globals
 def main
   system('clear')
   prompt('Welcome to a game of "Rock, Paper, Scissors, Spock, Lizard!"')
