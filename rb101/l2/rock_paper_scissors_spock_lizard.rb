@@ -51,7 +51,6 @@ def valid_name?(str)
 end
 
 def valid_choice?(player_choice)
-  # guard clause in case player hits return/enter without an input
   return false if player_choice.empty?
 
   name, abbr = choice_key_value_pair(player_choice)
@@ -99,9 +98,7 @@ def grand_winner(scores)
   scores['player'] < scores['computer'] ? PLAYERS[:computer] : PLAYERS[:player]
 end
 
-# return the name of the player if they are the winner
-# otherwise, default to 'Computer' as the winner
-# (capitalize 'computer' name for consistency)
+# capitalize 'computer' name for consistency
 def grand_winner_name(winner, player_name)
   winner == PLAYERS[:player] ? player_name : winner.capitalize
 end
@@ -204,7 +201,6 @@ def rock_paper_scissors_spock_lizard(player_name)
   display_final_results(scores, player_name)
 end
 
-# keep logic within a main method to avoid unnecessary globals
 def main
   system('clear')
   prompt('Welcome to a game of "Rock, Paper, Scissors, Spock, Lizard!"')
