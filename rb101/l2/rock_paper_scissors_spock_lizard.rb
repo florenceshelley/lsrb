@@ -41,7 +41,7 @@ def valid_choice?(player_choice)
   # guard clause in case player hits return/enter without an input
   return false if player_choice.empty?
 
-  name, abbr = choice_pair(player_choice)
+  name, abbr = choice_key_value_pair(player_choice)
 
   # check if the choice input is the full name or the abbreviation
   name.to_s == player_choice || abbr == player_choice
@@ -61,36 +61,32 @@ end
 
 # return the abbreviated name of the player's choice
 def choice_abbr(choice)
-  _, abbr = choice_pair(choice)
+  _, abbr = choice_key_value_pair(choice)
   abbr
 end
 
 # return the full name of the player's choice
 def choice_name(choice)
-  name, = choice_pair(choice)
+  name, = choice_key_value_pair(choice)
   name.to_s
 end
 
-# return the full name and abbr of the player's choice
-def choice_pair(choice)
+# return the full name and abbreviation of the player's choice
+def choice_key_value_pair(choice)
   VALID_CHOICES.find do |key, value|
     key.to_s == choice || value == choice
   end
 end
 
 def grand_winner(scores)
-  return 'computer' if scores['player'] < scores['computer']
-
-  'player'
+  scores['player'] < scores['computer'] ? 'computer' : 'player'
 end
 
 # return the name of the player if they are the winner
-# otherwise, default to 'computer' (as the winner)
+# otherwise, default to 'Computer' as the winner
+# (capitalize 'computer' name for consistency)
 def grand_winner_name(winner, player_name)
-  return player_name if winner == 'player'
-
-  # capitalize 'computer' name for consistency
-  winner.capitalize
+  winner == 'player' ? player_name : winner.capitalize
 end
 
 def calculate_scores(outcome, current_scores)
