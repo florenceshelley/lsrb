@@ -28,6 +28,15 @@ def prompt(msg)
   puts("=> #{msg}")
 end
 
+def divider
+  prompt('-' * 25)
+end
+
+def trailing_newline_divider
+  divider
+  prompt(' ')
+end
+
 def play_again?
   prompt('Would you like to play again? (y to keep playing)')
   play_again = gets.chomp.downcase
@@ -124,7 +133,7 @@ def get_player_choice
 
   loop do
     prompt("Choose one: #{interpolated_choices.join(', ')}")
-    player_choice = gets.chomp
+    player_choice = gets.chomp.downcase
     break if valid_choice?(player_choice)
     prompt('That is not a valid choice.')
   end
@@ -185,9 +194,11 @@ def rock_paper_scissors_spock_lizard(player_name)
 
     outcome = get_outcome(player_choice, computer_choice)
     display_outcome(outcome)
+    divider
 
     increment_scores(outcome, scores)
     display_scores(scores, player_name)
+    trailing_newline_divider
   end
 
   display_final_results(scores, player_name)
@@ -202,6 +213,8 @@ def main
 
   loop do
     rock_paper_scissors_spock_lizard(player_name)
+    trailing_newline_divider
+
     break unless play_again?
 
     # clear the terminal on a new game instead of before every
