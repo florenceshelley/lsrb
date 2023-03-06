@@ -16,7 +16,7 @@ VALID_CHOICES = {
   lizard: 'l'
 }.freeze
 
-WINNING_CHOICES = {
+WINNING_MOVES = {
   VALID_CHOICES[:rock] => [VALID_CHOICES[:scissors], VALID_CHOICES[:lizard]],
   VALID_CHOICES[:paper] => [VALID_CHOICES[:rock], VALID_CHOICES[:spock]],
   VALID_CHOICES[:scissors] => [VALID_CHOICES[:paper], VALID_CHOICES[:lizard]],
@@ -144,9 +144,9 @@ end
 def get_outcome(player_choice, computer_choice)
   choice = choice_abbr(player_choice)
 
-  if WINNING_CHOICES[choice].include?(computer_choice)
+  if WINNING_MOVES[choice].include?(computer_choice)
     OUTCOMES[:win]
-  elsif WINNING_CHOICES[computer_choice].include?(choice)
+  elsif WINNING_MOVES[computer_choice].include?(choice)
     OUTCOMES[:lose]
   else
     OUTCOMES[:draw]
