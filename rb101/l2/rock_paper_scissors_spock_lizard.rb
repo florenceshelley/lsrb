@@ -58,13 +58,13 @@ def interpolated_choices
   choices
 end
 
-# get the abbreviated name of the player's choice
+# return the abbreviated name of the player's choice
 def choice_abbr(choice)
   _, abbr = choice_pair(choice)
   abbr
 end
 
-# get the full name of the player's choice
+# return the full name of the player's choice
 def choice_name(choice)
   name, = choice_pair(choice)
   name.to_s
@@ -83,8 +83,8 @@ def grand_winner(scores)
   'player'
 end
 
-# returns the name of the player if they are the winner
-# otherwise, defaults to 'computer' (as the winner)
+# return the name of the player if they are the winner
+# otherwise, default to 'computer' (as the winner)
 def grand_winner_name(winner, player_name)
   return player_name if winner == 'player'
 
@@ -183,8 +183,6 @@ def rock_paper_scissors_spock_lizard(player_name)
 
     calculate_scores(outcome, scores)
     display_scores(scores, player_name)
-
-    break unless scores['player'] < 3 || scores['computer'] < 3
   end
 
   display_final_results(scores, player_name)
