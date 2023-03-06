@@ -38,9 +38,10 @@ def valid_name?(str)
 end
 
 def valid_choice?(player_choice)
-  name, abbr = VALID_CHOICES.find do |_, value|
-    player_choice.start_with?(value)
-  end
+  # guard clause in case player hits return/enter without an input
+  return false if player_choice.empty?
+
+  name, abbr = choice_pair(player_choice)
 
   # check if the choice input is the full name or the abbreviation
   name.to_s == player_choice || abbr == player_choice
