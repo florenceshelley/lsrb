@@ -60,10 +60,11 @@ def generate_computer_choice
 end
 
 def interpolated_choices
-  VALID_CHOICES.reduce([]) do |choices, (key, value)|
-    choices << "#{value} (#{key})"
-    choices
-  end
+  choices = []
+
+  VALID_CHOICES.each { |key, value| choices << "#{value} (#{key})" }
+
+  choices
 end
 
 # return the abbreviated name of the player's choice
