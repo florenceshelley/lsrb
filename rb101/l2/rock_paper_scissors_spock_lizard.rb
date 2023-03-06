@@ -31,6 +31,12 @@ def play_again?
   play_again == 'y' || play_again == 'yes'
 end
 
+# validate that the name consists only of alphabet characters
+def valid_name?(str)
+  str = str.to_s
+  /^[a-zA-Z\`]++(?:[a-zA-Z\`]++)?$/.match?(str)
+end
+
 def valid_choice?(player_choice)
   name, abbr = VALID_CHOICES.find do |_, value|
     player_choice.start_with?(value)
@@ -77,12 +83,35 @@ def grand_winner(scores)
   'player'
 end
 
+# returns the name of the player if they are the winner
+# otherwise, defaults to 'computer' (as the winner)
+def grand_winner_name(winner, player_name)
+  return player_name if winner == 'player'
+
+  # capitalize 'computer' name for consistency
+  winner.capitalize
+end
+
 def calculate_scores(outcome, current_scores)
   if outcome == OUTCOMES[:win]
     current_scores['player'] += 1
   elsif outcome == OUTCOMES[:lose]
     current_scores['computer'] += 1
   end
+end
+
+def get_player_name
+  name = nil
+  prompt("What is your name?")
+
+  loop do
+    name = gets.chomp
+    break if valid_name?(name)
+    prompt('Please enter a valid name.')
+  end
+
+  # capitalize name for cleanliness and a consistent score format
+  name.capitalize
 end
 
 def get_player_choice
@@ -121,14 +150,15 @@ def display_outcome(outcome)
   end
 end
 
-def display_scores(scores)
-  prompt("Player: #{scores['player']}; Computer: #{scores['computer']}")
+def display_scores(scores, player_name)
+  prompt("#{player_name}: #{scores['player']}; Computer: #{scores['computer']}")
 end
 
-def display_final_results(scores)
+def display_final_results(scores, player_name)
   grand_winner = grand_winner(scores)
+  grand_winner_name = grand_winner_name(grand_winner, player_name)
   win_count = scores[grand_winner]
-  message = "The grand winner is #{grand_winner}, with #{win_count} wins!"
+  message = "The grand winner is #{grand_winner_name}, with #{win_count} wins!"
 
   prompt(message)
 end
@@ -140,34 +170,45 @@ def display_selections(player_choice, computer_choice)
   prompt("You chose: #{player_choice}; Computer chose: #{computer_choice}")
 end
 
-def rock_paper_scissors_spock_lizard
+def rock_paper_scissors_spock_lizard(player_name)
   scores = { 'player' => 0, 'computer' => 0 }
 
   while scores['player'] < 3 && scores['computer'] < 3
     player_choice = get_player_choice
     computer_choice = generate_computer_choice
-
     display_selections(player_choice, computer_choice)
 
     outcome = get_outcome(player_choice, computer_choice)
     display_outcome(outcome)
 
     calculate_scores(outcome, scores)
-    display_scores(scores)
+    display_scores(scores, player_name)
 
     break unless scores['player'] < 3 || scores['computer'] < 3
   end
 
-  display_final_results(scores)
+  display_final_results(scores, player_name)
+end
+
+# keep logic within a main method to avoid globals
+def main
+  system('clear')
+  prompt('Welcome to a game of "Rock, Paper, Scissors, Spock, Lizard!"')
+
+  player_name = get_player_name
+
+  loop do
+    rock_paper_scissors_spock_lizard(player_name)
+    break unless play_again?
+
+    # clear the terminal on a new game instead of before every
+    # selection so that the player can still see their previous
+    # choices, outcomes, and current score
+    system('clear')
+  end
+
+  prompt("That was fun. Thanks for playing, #{player_name}!")
 end
 
 # start
-prompt('Welcome to a game of "Rock, Paper, Scissors, Spock, Lizard!"')
-
-loop do
-  rock_paper_scissors_spock_lizard
-  break unless play_again?
-  system('clear')
-end
-
-prompt('That was fun, thanks for playing!')
+main
