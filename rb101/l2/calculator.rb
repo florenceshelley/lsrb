@@ -1,24 +1,33 @@
-# ask the user for two numbers
-# ask the user for an operation to perform
-# perform the operation on the two numbers
-# output the result
+OPERATION_VERBS = {
+  '1' => 'Adding',
+  '2' => 'Subtracting',
+  '3' => 'Multiplying',
+  '4' => 'Dividing'
+}.freeze
 
 def prompt(msg)
-  Kernel.puts("=> #{msg}")
+  puts("=> #{msg}")
 end
 
 def valid_name?(str)
   str = str.to_s
-  /^\w/.match(str)
+  /^[a-zA-Z\`]++(?:[a-zA-Z\`]++)?$/.match?(str)
 end
 
 def valid_number?(num)
   num = num.to_s
-  /^\d/.match(num)
+  /\A\d+(\.\d+)?\z/.match?(num)
 end
 
 def valid_operator?(op)
-  %w(1 2 3 4).include?(op)
+  OPERATION_VERBS.keys.include?(op)
+end
+
+def calculate_again?
+  prompt('Do you want to perform another calculation? (y to calculate again)')
+  keep_calculating = gets.chomp.downcase
+
+  keep_calculating == 'y' || keep_calculating == 'yes'
 end
 
 def operator_prompt
@@ -31,28 +40,17 @@ What operation would you like to perform?
   MSG
 end
 
-def operation_to_message(op)
-  case op
-  when '1'
-    'Adding'
-  when '2'
-    'Subtracting'
-  when '3'
-    'Multiplying'
-  when '4'
-    'Dividing'
-  end
-end
-
 def calculate(op, num1, num2)
+  op = OPERATION_VERBS[op]
+
   case op
-  when '1'
+  when OPERATION_VERBS['1']
     num1.to_i + num2.to_i
-  when '2'
+  when OPERATION_VERBS['2']
     num1.to_i - num2.to_i
-  when '3'
+  when OPERATION_VERBS['3']
     num1.to_i * num2.to_i
-  when '4'
+  when OPERATION_VERBS['4']
     num1.to_f / num2.to_f
   end
 end
@@ -60,39 +58,25 @@ end
 def get_name
   name = nil
   loop do
-    name = Kernel.gets.chomp
+    name = gets.chomp
 
     break if valid_name?(name)
     prompt('Make sure to use a valid name. Enter a name:')
   end
 
-  name
+  name.downcase.capitalize
 end
 
-def get_num1
-  num1 = nil
-  loop do
-    prompt("What's the first number?")
-    num1 = Kernel.gets.chomp
+def get_num
+  num = nil
 
-    break if valid_number?(num1)
+  loop do
+    num = gets.chomp
+    break if valid_number?(num)
     prompt('Invalid input. Please enter a number.')
   end
 
-  num1
-end
-
-def get_num2
-  num2 = nil
-  loop do
-    prompt("What's the second number?")
-    num2 = Kernel.gets.chomp
-
-    break if valid_number?(num2)
-    prompt('Invalid input. Please enter a number.')
-  end
-
-  num2
+  num
 end
 
 def get_operator
@@ -100,7 +84,7 @@ def get_operator
 
   operator = nil
   loop do
-    operator = Kernel.gets.chomp
+    operator = gets.chomp
 
     break if valid_operator?(operator)
     prompt('Invalid input. Please select a valid operator: 1, 2, 3 or 4')
@@ -109,26 +93,42 @@ def get_operator
   operator
 end
 
-prompt('Welcome to Calculator! Enter your name:')
+def display_operation_results(op, result)
+  operation_verb = OPERATION_VERBS[op]
 
-name = get_name
-prompt("Hi #{name}!")
+  prompt("#{operation_verb} the two numbers...")
+  prompt("The result is #{result}")
+end
 
-loop do
-  num1 = get_num1
-  num2 = get_num2
+def calculator
+  prompt("What's the first number?")
+  num1 = get_num
+
+  prompt("What's the second number?")
+  num2 = get_num
+
   operator = get_operator
 
   result = calculate(operator, num1, num2)
-
-  operation_message = operation_to_message(operator)
-  prompt("#{operation_message} the two numbers...")
-  prompt("The result is #{result}")
-
-  prompt('Do you want to perform another calculation? (y to calculate again)')
-  keep_calculating = Kernel.gets.chomp
-
-  break unless keep_calculating.downcase == 'y'
+  display_operation_results(operator, result)
 end
 
-prompt("Thank you for using calculator, #{name}!")
+def main
+  system('clear')
+
+  prompt('Welcome to Calculator! Enter your name:')
+
+  name = get_name
+  prompt("Hi #{name}!")
+
+  loop do
+    calculator
+    break unless calculate_again?
+    system('clear')
+  end
+
+  prompt("Thank you for using calculator, #{name}!")
+end
+
+# start
+main
